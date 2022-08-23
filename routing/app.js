@@ -16,22 +16,30 @@ const server = http.createServer((req, res) => {
 
   switch (req.url) {
     case "/":
+    case "/home":
+    case "/index.html":
       basePath = createPath("index");
-      req.statusCode = 200;
+      res.statusCode = 200;
+      break;
+    case "/about-us":
+      res.statusCode = 301;
+      res.setHeader("Location", "/contacts");
+      res.end();
       break;
     case "/contacts":
       basePath = createPath("contacts");
-      req.statusCode = 200;
+      res.statusCode = 200;
       break;
     default:
       basePath = createPath("error");
-      req.statusCode = 404;
+      res.statusCode = 404;
       break;
   }
 
   fs.readFile(basePath, (error, data) => {
     if (error) {
       console.log("Error!");
+      res.statusCode = 500;
       res.end();
     } else {
       res.write(data);
