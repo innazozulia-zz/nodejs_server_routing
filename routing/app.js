@@ -7,6 +7,7 @@ const PORT = 3001;
 
 const server = http.createServer((req, res) => {
   console.log("Server requests");
+  console.log("just for test");
 
   res.setHeader("Content-Type", "text/html");
 
