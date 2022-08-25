@@ -25,6 +25,7 @@ app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms")
 );
 
+app.use(express.urlencoded({ extended: false }));
 //add midlwwar
 app.use((req, res, next) => {
   console.log("JUST for Test");
@@ -52,15 +53,42 @@ app.get("/contacts", (req, res) => {
 });
 app.get("/posts/:id", (req, res) => {
   const title = "Post";
-  res.render(createPath("post"), { title });
+  const post = {
+    id: "1",
+    text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente quidem provident, dolores",
+    title: "Post one",
+    author: "Inna",
+    date: "25.07.2022",
+  };
+  res.render(createPath("post"), { title, post });
 });
 app.get("/posts", (req, res) => {
+  const posts = [
+    {
+      id: "1",
+      text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente quidem provident, dolores",
+      title: "Post one",
+      author: "Inna",
+      date: "25.07.2022",
+    },
+  ];
   const title = "Posts";
-  res.render(createPath("posts"), { title });
+  res.render(createPath("posts"), { title, posts });
 });
-
+app.post("/add-post", (req, res) => {
+  const { title, author, text } = req.body;
+  const post = {
+    id: new Date(),
+    date: new Date().toLocaleDateString(),
+    title,
+    author,
+    text,
+  };
+  res.render(createPath("post"), { title, post });
+});
 app.get("/add-post", (req, res) => {
   const title = "Add Post";
+
   res.render(createPath("add-post"), { title });
 });
 
