@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const morgan = require("morgan");
 
 const app = express();
 
@@ -12,6 +13,28 @@ createPath = (page) => path.resolve(__dirname, "ejs-views", `${page}.ejs`);
 app.listen(PORT, (error) => {
   error ? console.log("Error!") : console.log(`Listening port ${PORT}`);
 });
+
+// add middlewar
+// app.use((req, res, next) => {
+//   console.log(`path: ${req.path}`);
+//   console.log(`method: ${req.method}`);
+//   next();
+// });
+
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms")
+);
+
+//add midlwwar
+app.use((req, res, next) => {
+  console.log("JUST for Test");
+  next();
+});
+
+//if you want to give accsess to styles or img
+// we need to create middlewar
+//!IMPORTANT
+// app.use(express.static("style"));
 
 app.get("/", (req, res) => {
   const title = "Home";
@@ -42,13 +65,15 @@ app.get("/add-post", (req, res) => {
 });
 
 //redirect
-app.get("/about-us", (req, res) => {
-  res.redirect("/contacts");
+app.get("/add-post", (req, res) => {
+  const title = "Add Post";
+  res.render(createPath("add-post"), { title });
 });
 
-//midlewar перехватывает запросы по несуществующему пути и рендерить ошибку
+//middlewar
 app.use((req, res) => {
-  res.status(400).render(createPath("error"));
+  const title = "Error Page";
+  res.status(404).render(createPath("error"), { title });
 });
 
 // const express = require('express');
