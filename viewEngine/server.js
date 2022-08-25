@@ -1,10 +1,21 @@
 const express = require("express");
 const path = require("path");
 const morgan = require("morgan");
+const mongoose = require("mongoose");
+const Post = require("./models/post");
 
 const app = express();
 
 const PORT = 3003;
+
+const db =
+  "mongodb+srv://user:12345678qwe@cluster0.xm4gsw2.mongodb.net/?retryWrites=true&w=majority";
+
+//connect to mongo db
+mongoose
+  .connect(db)
+  .then((res) => console.log("connected to  db"))
+  .catch((error) => console.log(error));
 
 app.set("view ingine", "ejs");
 
@@ -77,14 +88,24 @@ app.get("/posts", (req, res) => {
 });
 app.post("/add-post", (req, res) => {
   const { title, author, text } = req.body;
-  const post = {
-    id: new Date(),
-    date: new Date().toLocaleDateString(),
-    title,
-    author,
-    text,
-  };
-  res.render(createPath("post"), { title, post });
+  const post = new Post({ title, text, author });
+  post
+    .save()
+    .then((result) => res.send(result))
+    .catch((error) => {
+      console.log(error);
+      res.status(404).render(createPath("error"), { title: Error });
+    });
+
+  // for static data in server side
+  // const post = {
+  //   id: new Date(),
+  //   date: new Date().toLocaleDateString(),
+  //   title,
+  //   author,
+  //   text,
+  // };
+  // res.render(createPath("post"), { title, post });
 });
 app.get("/add-post", (req, res) => {
   const title = "Add Post";
