@@ -11,6 +11,7 @@ app.listen(PORT, (error) => {
   error ? console.log("Error!") : console.log(`Listening port ${PORT}`);
 });
 
+// render html text
 app.get("/", (req, res) => {
   //   res.send("<h1>Hello</h1>");
   res.sendFile(createPath("index"));
@@ -20,10 +21,12 @@ app.get("/contacts", (req, res) => {
   res.sendFile(createPath("contacts"));
 });
 
-//midlewar перехватывает запросы по несуществующему пути
+//redirect
+app.get("/about-us", (req, res) => {
+  res.redirect("/contacts");
+});
+
+//midlewar перехватывает запросы по несуществующему пути и рендерить ошибку
 app.use((req, res) => {
   res.status(400).sendFile(createPath("error"));
 });
-
-//redirect
-app.get("about-us", (req, res) => []);
